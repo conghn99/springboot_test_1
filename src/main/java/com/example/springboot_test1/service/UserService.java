@@ -56,6 +56,9 @@ public class UserService {
     }
 
     public UserDTO createUser(CreateUserRequest request) {
+        if (request.getName().equals("") || request.getEmail().equals("") || request.getPhone().equals("") || request.getAddress().equals("Thành phố/Tỉnh") || request.getPassword().equals("")) {
+            throw new BadRequestException("Ko được để trống các ô");
+        }
         int id = userRepository.getUserList().get(userRepository.getUserList().size() - 1).getId() + 1;
         User user = new User(
                 id,
@@ -71,16 +74,19 @@ public class UserService {
     }
 
     public UserDTO updateUser(int id, UpdateUserRequest request) {
-        for (User user : userRepository.getUserList()) {
-            if(user.getId() == id) {
-                user.setName(request.getName());
-                user.setPhone(request.getPhone());
-                user.setAddress(request.getAddress());
-                return convertToDTO(user);
+        if (request.getName().equals("") || request.getPhone().equals("") || request.getAddress().equals("")) {
+            throw new BadRequestException("Ko được để trống các trường");
+        } else  {
+            for (User user : userRepository.getUserList()) {
+                if(user.getId() == id) {
+                    user.setName(request.getName());
+                    user.setPhone(request.getPhone());
+                    user.setAddress(request.getAddress());
+                    return convertToDTO(user);
+                }
             }
+            throw new NotFoundException("Not found user with id " + id);}
         }
-        throw new NotFoundException("Not found user with id " + id);
-    }
 
     public void deleteUser(int id) {
         userRepository.getUserList().removeIf(user -> user.getId() == id);

@@ -77,7 +77,7 @@ public class UserController {
     }
 
     // 9. Quên mật khẩu
-    @PostMapping("users/{id}/fotgot-password")
+    @PostMapping("users/{id}/forgot-password")
     public String newPassword(@PathVariable int id) {
         return userService.forgotPassword(id);
     }
